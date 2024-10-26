@@ -23,9 +23,6 @@ Explaining codebase:
 - Results folder stores all outputs of the analysis.
 - tools folder contains some of the basic functions that are used in the analysis.
 
-
-
-
 Carlos Aguila 
 
 October 2024 
