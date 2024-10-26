@@ -116,7 +116,7 @@ new_metrics = ['linelen_corr', 'decay_amp_corr', 'slow_width_corr', 'slow_amp_co
                'rise_duration_corr', 'decay_duration_corr']
 
 # Melt the dataframe to long format
-melted_pearson_df = pearson_df.melt(id_vars='SOZ', 
+other_melted_pearson_df = pearson_df.melt(id_vars='SOZ', 
                               value_vars=new_metrics,
                               var_name='Metric', value_name='Value')
 
@@ -127,7 +127,7 @@ my_palette = {1:'#E64B35FF', 3:'#7E6148FF', 2:'#3C5488FF'}
 fig_args = {'x':'Metric',
             'y':'Value',
             'hue':'SOZ',
-            'data':melted_pearson_df,
+            'data':other_melted_pearson_df,
             'order': new_metrics,
             'hue_order':[1,2,3]}
 
@@ -353,9 +353,9 @@ print("SPIKE TIMING:")
 print(kruskal(latency[latency['SOZ'] == 1]['recruitment_latency_thresh_corr'], latency[latency['SOZ'] == 2]['recruitment_latency_thresh_corr'],latency[latency['SOZ'] == 3]['recruitment_latency_thresh_corr']))
 
 # %%
-#Supplementary figure X
+#Supplementary figure S4
 
-morphology_df = pearson_df.drop(columns = {"spike_rate_corr","recruitment_latency_thresh_corr","SOZ","pt_id"})
+morphology_df = pearson_df.drop(columns = {"spike_rate_corr","recruitment_latency_thresh_corr","SOZ","pt_id",'rise_slope_corr','decay_slope_corr','average_amp_corr','rise_duration_corr','decay_duration_corr'})
 morphology_df = morphology_df.rename(columns = {
     'slow_width_corr': 'Slow Wave Width',
     'spike_width_corr': 'Spike Width',
@@ -369,7 +369,7 @@ morphology_df = morphology_df.rename(columns = {
 plt.rcParams['font.family'] = 'Arial'
 
 # Assuming morphology_df is your DataFrame with the feature data
-corr_matrix = morphology_df.drop(columns = ['Spike Width','Slow Wave Amplitude']).corr()
+corr_matrix = morphology_df.drop(columns = ['Slow Wave Width','Slow Wave Amplitude']).corr()
 
 # Set up the matplotlib figure
 fig = plt.figure(figsize=(14, 10))
@@ -380,7 +380,9 @@ g = sns.clustermap(corr_matrix,
                    center=0,
                    vmin=-1,
                    vmax=1,
-                   dendrogram_ratio=(0.2, 0),
+                   row_cluster=True,
+                   col_cluster=True,
+                   dendrogram_ratio=(.2, .2),
                    cbar_pos=(0.02, 0.7, 0.05, 0.18),
                    tree_kws={'color': 'black'},
                    figsize=(14, 10))
@@ -389,23 +391,18 @@ g = sns.clustermap(corr_matrix,
 g.ax_row_dendrogram.set_visible(True)
 g.ax_col_dendrogram.set_visible(False)
 
-# Move the main axes (heatmap) to the right
-g.ax_heatmap.set_position([0.3, 0.1, 0.6, 0.8])
+# Position the heatmap
+g.ax_heatmap.set_position([0.15, 0.1, 0.55, 0.8])
 
-# Move the row dendrogram to the left
-g.ax_row_dendrogram.set_position([0.05, 0.1, 0.15, 0.8])
-
-# Remove default y-axis labels
-g.ax_heatmap.set_yticks([])
-
-# Add centered y-axis labels
-for i, label in enumerate(corr_matrix.index):
-    g.ax_heatmap.text(-0.05, i + 0.5, label, 
-                      va='center', ha='right',
-                      transform=g.ax_heatmap.get_yaxis_transform())
+# Move the row dendrogram to the right
+g.ax_row_dendrogram.set_position([0.71, 0.1, 0.15, 0.8])
 
 # Rotate x-axis labels
 g.ax_heatmap.set_xticklabels(g.ax_heatmap.get_xticklabels(), rotation=90, ha='center')
+
+# Adjust y-axis labels
+g.ax_heatmap.yaxis.set_ticks_position('left')
+g.ax_heatmap.yaxis.set_label_position('left')
 
 # Adjust colorbar position
 g.cax.set_position([0.92, 0.1, 0.02, 0.8])
@@ -415,8 +412,7 @@ plt.suptitle('Correlation between Morphology Features', fontsize=30, fontweight=
 
 # Adjust layout
 plt.tight_layout(rect=[0, 0, 0.95, 0.95])
-plt.savefig('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/5-propagation/figures/MUSC+HUP/official/choosing_feats_noslow.pdf')
-
+plt.savefig('../../Results/Supplement-FigS4-Correlation.pdf')
 plt.show()
 
 # %%
