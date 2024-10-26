@@ -16,7 +16,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Set default output directory to current working directory
-default_output_dir = os.path.join('../../Results/', "LR_elastic")
+default_output_dir = os.path.join('../Results/', "LR_elastic")
 
 # Allow custom output directory via environment variable
 output_dir = os.environ.get("ML_OUTPUT_DIR", default_output_dir)
@@ -222,7 +222,7 @@ def main():
 
     sns.despine()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'logistic_regression_ROC_curves.pdf'))
+    plt.savefig('../Results/Fig5-ROC_curves.pdf')
     plt.close()
 
 if __name__ == "__main__":

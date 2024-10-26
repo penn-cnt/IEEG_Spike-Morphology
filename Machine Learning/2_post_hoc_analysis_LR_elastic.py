@@ -1,21 +1,20 @@
 #%%
 #load predictions
 import pandas as pd
-code_path = os.path.dirname('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/functions/')
+code_path = os.path.dirname('../tools/functions/')
 sys.path.append(code_path)
 from delongs_test import *
 
 def main():
-    combined_preds = pd.read_csv('ML_results/LR_elastic/outcome/Combined_predictions-24m-outcomes.csv').rename(columns = {"Predicted_Probability":"combined_predprob"})
-    interictal_preds = pd.read_csv('ML_results/LR_elastic/outcome/Interictal_predictions-24m-outcomes.csv').rename(columns = {"Predicted_Probability":"interictal_predprob"})
-    ictal_preds = pd.read_csv('ML_results/LR_elastic/outcome/Ictal_predictions-24m-outcomes.csv').rename(columns = {"Predicted_Probability":"ictal_predprob"})
+    combined_preds = pd.read_csv('../Results/LR_elasticCombined_predictions.csv').rename(columns = {"Predicted_Probability":"combined_predprob"})
+    interictal_preds = pd.read_csv('../Results/LR_elastic/Interictal_predictions.csv').rename(columns = {"Predicted_Probability":"interictal_predprob"})
+    ictal_preds = pd.read_csv('../Results/LR_elastic/Ictal_predictions.csv').rename(columns = {"Predicted_Probability":"ictal_predprob"})
 
     merged_preds_v1 = combined_preds.merge(interictal_preds[['Patient_ID','interictal_predprob']], on='Patient_ID', how = "left")
     merged_preds = merged_preds_v1.merge(ictal_preds[['Patient_ID','ictal_predprob']], on = 'Patient_ID', how = "inner")
 
-
     #Run the delong test on the pairs
-    print('\nDifference between COMBINED vs. ICTAL-ONLY:')
+    print('Difference between COMBINED vs. ICTAL-ONLY:')
     auc1, cov1, p1 = (delong_roc_test(np.array(merged_preds['True_Label']), np.array(merged_preds['combined_predprob']), np.array(merged_preds['ictal_predprob'])))
     print("AUC:",auc1)
     print("COV:",cov1)
@@ -58,9 +57,9 @@ def main():
 
     significant_p_values, threshold_p_value = benjamini_hochberg(p_values, desired_fdr)
 
-    print("P-values:", p_values)
-    print("Significant p-values:", significant_p_values)
-    print("Threshold p-value:", threshold_p_value)
+    print("\nP-values:", p_values)
+    print("\nSignificant p-values:", significant_p_values)
+    print("\nThreshold p-value:", threshold_p_value)
 
 if __name__=="__main__":
     main()
@@ -80,7 +79,7 @@ def calculate_metrics(y_true, y_pred):
 
 def load_preds(name_to_load):
     # Load the Combined_predictions.csv file
-    df = pd.read_csv(f'ML_results/LR_elastic/{name_to_load}.csv')
+    df = pd.read_csv(f'../Results/LR_elastic/{name_to_load}.csv')
     # Extract true labels and predicted labels
     y_true = df['True_Label']
     y_pred = df['Predicted_Label']
@@ -120,4 +119,38 @@ for i in range(3):
     print(f"Sensitivity: {sensitivity:.3f} (95% CI: {confidence_intervals[0][0]:.3f} - {confidence_intervals[1][0]:.3f})")
     print(f"Specificity: {specificity:.3f} (95% CI: {confidence_intervals[0][1]:.3f} - {confidence_intervals[1][1]:.3f})")
     print(f"Balanced Accuracy: {balanced_accuracy:.3f} (95% CI: {confidence_intervals[0][2]:.3f} - {confidence_intervals[1][2]:.3f})")
+# %%
+#plot the importance of each feature for the combined model
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the data
+data = pd.read_csv('../Results/LR_elastic/Combined_feature_importance.csv')
+
+# Sort the data by importance in descending order
+data_sorted = data.sort_values('Importance', ascending=True)
+
+# Create the plot
+plt.figure(figsize=(8, 6))
+plt.rcParams['font.family'] = 'Arial'
+
+sns.barplot(x='Importance', y='Feature', data=data_sorted, color='#E64B35FF')
+
+# Customize the plot
+plt.title('Combined Model: Feature Importance', fontsize=28)
+plt.xlabel('Importance', fontsize=26)
+
+# Add value labels to the end of each bar
+for i, v in enumerate(data_sorted['Importance']):
+    plt.text(v, i, f' {v:.2f}', va='center', fontsize = 20)
+
+# Adjust layout and display the plot
+plt.tight_layout()
+sns.despine()
+plt.savefig('../Results/Fig5-feature_importance_LR-elastic.pdf')
+plt.show()
+
+
 # %%
