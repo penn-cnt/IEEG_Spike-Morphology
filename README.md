@@ -11,12 +11,25 @@ and initializing machine learning models to predict mTLE is included.
 To run the analysis, follow these steps:
 1) Download the codebase from:
    https://github.com/penn-cnt/IEEG_Spike-Morphology/
-2) Download the datasets from:
+2) Create an envrionment using requirements.txt or environment.yaml
+3) For full pipeline - Download the datasets from:
    https://upenn.box.com/s/d45set9nrrzxf2zbx4z18hsus1ivat84
-3) Upload your ieeg.org username and password file in the tools folder.
-   Put this file in the "tools" folder
+
+Explaining codebase:
+- Univariate Analysis folder contains the pooled (2 cohorts) analysis. Code here replicates figures. (complete run in <1 min).
+- Machine Learning folder contains python script for creating our logistic regression model and post-hoc analysis.
+- Process Spike Data folder contains the full pipeline. Code here takes ~5 mins to run through the full dataset of spikes (can be downloaded using drop link above).
+- Dataset folder contains intermediate datasets that can be used to replicate study.
+- Results folder stores all outputs of the analysis.
+- tools folder contains some of the basic functions that are used in the analysis.
 
 
-Carlos Aguila October 2024 aguilac@seas.upenn.edu
+
+
+Carlos Aguila 
+
+October 2024 
+
+aguilac@seas.upenn.edu
 
 }%
