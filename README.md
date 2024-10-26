@@ -22,7 +22,6 @@ Explaining codebase:
 - tools folder contains some of the basic functions that are used in the analysis.
 
 
-\n
 Carlos Aguila 
 
 October 2024 
