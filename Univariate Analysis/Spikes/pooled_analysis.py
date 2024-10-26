@@ -414,5 +414,3 @@ plt.suptitle('Correlation between Morphology Features', fontsize=30, fontweight=
 plt.tight_layout(rect=[0, 0, 0.95, 0.95])
 plt.savefig('../../Results/Supplement-FigS4-Correlation.pdf')
 plt.show()
-
-# %%

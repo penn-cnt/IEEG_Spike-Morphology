@@ -16,7 +16,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Set default output directory to current working directory
-default_output_dir = os.path.join(os.getcwd(), "ML_results", "LR_elastic_random")
+default_output_dir = os.path.join('../../Results/', "LR_elastic")
 
 # Allow custom output directory via environment variable
 output_dir = os.environ.get("ML_OUTPUT_DIR", default_output_dir)
@@ -36,11 +36,11 @@ print(f"Log file created at: {log_file}")
 
 # Load and preprocess data
 def load_data():
-    pearson_df = pd.read_csv('dataset/ML_data/MUSC/pooled_pearson_all_norm.csv', index_col=0)
+    pearson_df = pd.read_csv('../Dataset/pooled_pearson_all_norm.csv', index_col=0)
     pearson_df['SOZ'] = pearson_df['SOZ'].replace({2: 0, 3: 0})
     pearson_df['pt_id'] = pearson_df['pt_id'].astype(int)
 
-    EI_df = pd.read_csv('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/5-propagation/dataset/ML_data/EI_pearson_final1.csv', index_col=0)[['correlation', 'pt_id']]
+    EI_df = pd.read_csv('../Dataset/EI_pearson_final1.csv', index_col=0)[['correlation', 'pt_id']]
     EI_df['pt_id'] = EI_df['pt_id'].str.replace('3T_MP0', '').str.replace('HUP', '').astype(int)
 
     combined_df = pearson_df.merge(EI_df, on='pt_id')
@@ -128,6 +128,7 @@ def leave_one_out_cv(X, y):
         model = LogisticRegressionCV(
             cv=5,  # 5-fold cross-validation
             penalty='elasticnet',
+            random_state=42,
             solver='saga',
             l1_ratios=np.linspace(0, 1, 10),  # This creates an array of 10 values from 0 to 1
             Cs=np.logspace(-4, 4, 20),  # This creates an array of 20 values from 10^-4 to 10^4
@@ -147,6 +148,7 @@ def leave_one_out_cv(X, y):
 
 # Main execution
 def main():
+    print("Starting training")
     plt.rcParams['font.family'] = 'Arial'
 
     combined_data, ictal_data, interictal_data = load_data()
@@ -220,7 +222,7 @@ def main():
 
     sns.despine()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'logistic_regression_ROC_curves_v2.pdf'))
+    plt.savefig(os.path.join(output_dir, 'logistic_regression_ROC_curves.pdf'))
     plt.close()
 
 if __name__ == "__main__":
