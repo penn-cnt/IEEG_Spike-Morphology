@@ -12,7 +12,7 @@ To run the analysis, follow these steps:
 1) Download the codebase from:
    https://github.com/penn-cnt/IEEG_Spike-Morphology/
 2) Download the datasets from:
-   XXX
+   https://upenn.box.com/s/d45set9nrrzxf2zbx4z18hsus1ivat84
 3) Upload your ieeg.org username and password file in the tools folder.
    Put this file in the "tools" folder
 
