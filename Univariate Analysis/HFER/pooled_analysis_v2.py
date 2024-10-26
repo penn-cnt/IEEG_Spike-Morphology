@@ -15,38 +15,21 @@ import ast
 
 # Import custom functions
 import sys, os
-code_v2_path = os.path.dirname('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/spike_detector/')
+code_v2_path = os.path.dirname('../../tools/Spike-Detector/')
 sys.path.append(code_v2_path)
 from get_iEEG_data import *
 from spike_detector import *
 from iEEG_helper_functions import *
 from spike_morphology_v2 import *
 
-code_path = os.path.dirname('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/functions/')
+code_path = os.path.dirname('../../tools/functions/')
 sys.path.append(code_path)
 from ied_fx_v3 import *
 
-
-#60 seconds end target
-# hup_ei = pd.read_csv('../data/self_run/EI_new_onset_detector/EI_HUP_40_60s.csv')
-# musc_ei = pd.read_csv('../data/self_run/EI_new_onset_detector/EI_MUSC_40_60s.csv')
-
 #HFER per time
 type = '11s-hfer-'
-hup_ei = pd.read_csv('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/6-seizure_analysis/data/self_run/hfer_HUP_6s.csv')
-musc_ei = pd.read_csv('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/6-seizure_analysis/data/self_run/hfer_MUSC_6s.csv')
-
-# hup_ei = pd.read_csv('../data/self_run/HUP_all_hfer.csv')
-# musc_ei = pd.read_csv('../data/self_run/MUSC_all_hfer.csv')
-
-# hup_ei = pd.read_csv('../data/self_run/EI_new_onset_detector/EI_HUP_.csv')
-# musc_ei = pd.read_csv('../data/self_run/EI_new_onset_detector/EI_MUSC_v1-5.csv')
-
-
-# EI NEW (60s)
-# hup_ei = pd.read_csv('../data/self_run/EI_HUP_60s.csv')
-# musc_ei = pd.read_csv('../data/self_run/EI_MUSC_60s.csv')
-# hup_ei = pd.read_csv('../data/all_EI_results_summary_15052024.csv')
+hup_ei = pd.read_csv('../../Dataset/hfer_HUP_11s.csv')
+musc_ei = pd.read_csv('../../Dataset/hfer_MUSC_11s.csv')
 
 #%% 
 
@@ -102,7 +85,7 @@ grouped['channel_label'] = grouped.apply(
     axis=1
 )
 
-musc_files = pd.read_csv('../data/MUSC_files.csv', index_col = 0)
+musc_files = pd.read_csv('../../Dataset/MUSC_files.csv', index_col = 0)
 
 all_spikes = grouped.merge(musc_files[['pt_id','channel_label']], on = 'pt_id', how = 'inner')
 
@@ -131,7 +114,7 @@ all_spikes = all_spikes[~all_spikes['channel_label_x'].str.contains('I|LAP|T|S|C
 #strip the letters from the channel_label column and keep only the numerical portion
 all_spikes['channel_label_x'] = all_spikes['channel_label_x'].str.replace('L|R|A|H|P', '', regex = True)
 
-musc_sozs = pd.read_csv('../data/MUSC_sozs.csv', index_col = 0)
+musc_sozs = pd.read_csv('../../Dataset/MUSC_sozs.csv', index_col = 0)
 uniques_sozs = musc_sozs[['pt_id','region']].drop_duplicates()
 # merge them
 all_spikes = all_spikes.merge(uniques_sozs, on = 'pt_id', how='inner')
@@ -206,7 +189,7 @@ grouped['channel_label'] = grouped.apply(
     axis=1
 )
 
-hup_files = pd.read_csv('../data/HUP_files.csv', index_col = 0)
+hup_files = pd.read_csv('../../Dataset/HUP_files.csv', index_col = 0)
 
 all_spikes = grouped.merge(hup_files[['pt_id','channel_label']], on = 'pt_id', how = 'inner')
 
@@ -235,7 +218,7 @@ all_spikes = all_spikes[~all_spikes['channel_label_x'].str.contains('T|F|P|RCC|R
 #strip the letters from the channel_label column and keep only the numerical portion
 all_spikes['channel_label_x'] = all_spikes['channel_label_x'].str.replace('L|R|A|H|B|C|D', '', regex = True)
 
-hup_sozs = pd.read_csv('../data/SOZ_hup.csv', index_col = 0)
+hup_sozs = pd.read_csv('../../Dataset/SOZ_hup.csv', index_col = 0)
 uniques_sozs = hup_sozs[['pt_id','SOZ']].drop_duplicates()
 # merge them
 all_spikes = all_spikes.merge(uniques_sozs, on = 'pt_id', how='inner')
@@ -422,78 +405,7 @@ corr_df['SOZ'] = corr_df.apply(soz_assigner, axis = 1)
 pearson_df['SOZ'] = pearson_df.apply(soz_assigner, axis = 1)
 slope_df['SOZ'] = slope_df.apply(soz_assigner, axis = 1)
 
-# #%%
-
-# #SPEARMAN CORRELATION PLOTS
-# #create a boxplot comparing the distribution of correlation across SOZ types
-# plt.figure(figsize=(8,6))
-# #where 1, is MTL, 2 is NEO, and 3 is Other
-# #change font to arial
-# plt.rcParams['font.family'] = 'Arial'
-
-# my_palette = {1:'#E64B35FF', 'other cortex':'#7E6148FF', 'temporal neocortical':'#00A087FF'} #'temporal':'#3C5488FF'
-# pairs=[(1, 'temporal neocortical'), ('temporal neocortical','other cortex'), (1,'other cortex')]
-# order = [1,'temporal neocortical','other cortex']
-
-# my_palette = {1:'#E64B35FF', 2:'#3C5488FF'}
-# pairs=[(1, 2)]
-# order = [1,2]
-
-# ax = sns.boxplot(x='SOZ', y='correlation', data=corr_df, palette=my_palette, order = order, showfliers = False)
-# sns.stripplot(x="SOZ", y="correlation", data=corr_df, color="black", alpha=0.5)
-# annotator = Annotator(ax, pairs, data=corr_df, x="SOZ", y="correlation", order=order)
-# annotator.configure(test='Mann-Whitney', text_format='star', loc='inside', comparisons_correction='BH', verbose = True)
-# annotator.apply_and_annotate()
-
-
-# plt.xlabel('SOZ Type', fontsize=12)
-# plt.ylabel('Spearman Correlation', fontsize=12)
-# #change the x-tick labels to be more readable
-# # plt.xticks(np.arange(3), ['Mesial Temporal', 'Neocortical', 'Other Cortex'], fontsize = 12)
-# plt.xticks(np.arange(2), ['Mesial Temporal', 'Other'], fontsize = 12)
-# plt.yticks(fontsize = 12)
-
-# #part to change
-# plt.title(f'Feature = EI, Directionality', fontsize=16)
-# sns.despine()
-# # plt.savefig('../figures/spearman/EI-spearman.pdf')
-# plt.show()
-
-##%%
-
-# #Pearson Correlation PLOTS
-# #create a boxplot comparing the distribution of correlation across SOZ types
-# plt.figure(figsize=(8,6))
-# #change font to arial
-# plt.rcParams['font.family'] = 'Arial'
-# my_palette = {1:'#E64B35FF', 'other cortex':'#7E6148FF', 'temporal neocortical':'#00A087FF'} #'temporal':'#3C5488FF'
-# pairs=[(1, 'temporal neocortical'), ('temporal neocortical','other cortex'), (1,'other cortex')]
-# order = [1,'temporal neocortical','other cortex']
-
-# my_palette = {1:'#E64B35FF', 2:'#3C5488FF'}
-# pairs=[(1, 2)]
-# order = [1,2]
-# ax = sns.boxplot(x='SOZ', y='correlation', data=pearson_df, palette=my_palette, order=order, showfliers = False)
-# sns.stripplot(x="SOZ", y="correlation", data=pearson_df, color="black", alpha=0.5)
-# annotator = Annotator(ax, pairs, data=pearson_df, x="SOZ", y="correlation", order=order)
-# annotator.configure(test='Mann-Whitney', text_format='star', loc='inside', comparisons_correction='Benjamini-Hochberg', verbose = True)
-# annotator.apply_and_annotate()
-
-# plt.xlabel('SOZ Type', fontsize=12)
-# plt.ylabel('Pearson Correlation', fontsize=12)
-# #change the x-tick labels to be more readable
-# # plt.xticks(np.arange(3), ['Mesial Temporal', 'Neocortical', 'Other Cortex'], fontsize = 12)
-# plt.xticks(np.arange(2), ['Mesial Temporal', 'Other'], fontsize = 12)
-# plt.yticks(fontsize = 12)
-
-# #part to change
-# plt.title(f'Feature = EI, Directionality', fontsize=16)
-# sns.despine()
-# # plt.savefig(f'figures/sameside_perSOZ/bilateral/statistical_test/pearson/{Feat_of_interest}-ranksum_CLEAN.pdf')
-# plt.show()
-
-# %% RUN the same but now make sure that they are seperated. 
-
+#%%
 #find the spearman correlation of each row in all_spikes_avg
 #initialize a list to store the spearman correlation
 channel_labels = ['1','2','3','4','5','6','7','8','9','10','11','12']
@@ -539,39 +451,6 @@ pearson_df = pd.DataFrame(pearson_corr, columns=['correlation', 'p-value'])
 pearson_df['SOZ'] = [x[1] for x in label]
 pearson_df['pt_id'] = [x[0] for x in label]
 
-### New METRIC
-coeff_5 = []
-coeff_10 = []
-firstonly = []
-m_label = []
-for row in range(len(all_spikes_avg)):
-    # #if the row has less than 8 channels, omit from analysis
-    # if len(all_spikes_avg.iloc[row].dropna()) < 8:
-    #     continue
-    gradient = all_spikes_avg.iloc[row].to_list()
-    channel_labels = ['1','2','3','4','5','6','7','8','9','10','11','12']
-    channel_labels = [int(x) for x in channel_labels]
-    # for each nan in the graident list, remove the corresponding channel_labels
-    list_to_remove = []
-    for i in range(len(channel_labels)):
-        if np.isnan(gradient[i]):
-            list_to_remove.append(i)
-
-    #remove list_to_remove from channel_labels and gradient
-    channel_labels = [i for j, i in enumerate(channel_labels) if j not in list_to_remove]
-    gradient = [i for j, i in enumerate(gradient) if j not in list_to_remove]
-    m_label.append(all_spikes_avg.index[row])
-
-    # coeff_5.append((gradient[4]-gradient[0])/len(gradient[0:5]))
-    coeff_10.append((gradient[-1]-gradient[0])/len(gradient))
-    firstonly.append(gradient[0])
-
-slope_df = pd.DataFrame(data = coeff_5, columns = ['coef5'])
-slope_df['coef10'] = coeff_10
-slope_df['first_value'] = firstonly
-slope_df['SOZ'] = [x[1] for x in m_label]
-slope_df['pt_id'] = [x[0] for x in m_label]
-
 #remove the temporal patients for this plot (corr_df and pearson_df)
 # corr_df = corr_df[corr_df['SOZ'] != 'temporal']
 # pearson_df = pearson_df[pearson_df['SOZ'] != 'temporal']
@@ -588,51 +467,6 @@ def soz_assigner(row):
 
 corr_df['SOZ'] = corr_df.apply(soz_assigner, axis = 1)
 pearson_df['SOZ'] = pearson_df.apply(soz_assigner, axis = 1)
-slope_df['SOZ'] = slope_df.apply(soz_assigner, axis = 1)
-
-#%%
-#SPEARMAN CORRELATION PLOTS
-#create a boxplot comparing the distribution of correlation across SOZ types
-plt.figure(figsize=(8,6))
-#where 1, is MTL, 2 is NEO, and 3 is Other
-#change font to arial
-plt.rcParams['font.family'] = 'Arial'
-
-my_palette = {1:'#E64B35FF', 3:'#7E6148FF', 2:'#3C5488FF'}
-# my_palette = {1:'#E64B35FF', 2:'#3C5488FF'}
-pairs=[(1, 2),(1,3), (2,3)]
-order = [1,2,3]
-
-ax = sns.boxplot(x='SOZ', y='correlation', data=corr_df, palette=my_palette, order = order, showfliers = False)
-sns.stripplot(x="SOZ", y="correlation", data=corr_df, color="black", alpha=0.5)
-annotator = Annotator(ax, pairs, data=corr_df, x="SOZ", y="correlation", order=order)
-annotator.configure(test='Mann-Whitney', text_format='star', loc='inside', comparisons_correction='BH', verbose = True)
-annotator.apply_and_annotate()
-
-
-plt.xlabel('SOZ Type', fontsize=12)
-plt.ylabel('Spearman Correlation', fontsize=12)
-#change the x-tick labels to be more readable
-plt.xticks(np.arange(3), ['Mesial Temporal', 'Neocortical', 'Other Cortex'], fontsize = 12)
-# plt.xticks(np.arange(2), ['Mesial Temporal', 'Other'], fontsize = 12)
-plt.yticks(fontsize = 12)
-
-#part to change
-plt.title(f'Feature = EI, Directionality', fontsize=16)
-sns.despine()
-# plt.savefig(f'../figures/{type}_EI-spearman.pdf')
-plt.show()
-
-all_effect_szs = []
-for comparison in pairs:
-    # print(comparison)
-    soz1 = comparison[0]
-    soz2 = comparison[1]
-    group1 = corr_df[corr_df['SOZ'] == soz1]['correlation']
-    group2 = corr_df[corr_df['SOZ'] == soz2]['correlation']
-    all_effect_szs.append(['Spearman Corr EI', soz1, soz2, cohend(group1, group2)])
-
-print(all_effect_szs)
 
 #%%
 
@@ -661,11 +495,11 @@ plt.xticks(np.arange(3), ['Mesial Temporal', 'Neocortical', 'Other Cortex'], fon
 plt.yticks(np.arange(-1, 1.1, 0.5), fontsize=12)  # This sets ticks at -1, -0.5, 0, 0.5, 1
 
 #part to change
-plt.title(f'Feature = EI, Directionality', fontsize=16)
+plt.title(f'HFER Directionality', fontsize=16)
 sns.despine()
 plt.ylim([-1,1])
 
-# plt.savefig(f'../figures/{type}_EI-pearson.pdf')
+plt.savefig(f'../../Results/Fig4-{type}_HFER.pdf')
 plt.show()
 all_effect_szs = []
 for comparison in pairs:
@@ -679,7 +513,6 @@ for comparison in pairs:
 
 print(all_effect_szs)
 # %%
-
 #######
 #EI ANOVA
 from scipy.stats import kruskal, shapiro, levene, f_oneway
@@ -689,17 +522,3 @@ ei = pearson_df[['SOZ','correlation']]
 #change if you want anova, but really no different in results
 print("Pearson Correlations")
 print(kruskal(ei[ei['SOZ'] == 1]['correlation'], ei[ei['SOZ'] == 2]['correlation'],ei[ei['SOZ'] == 3]['correlation']))
-print(f_oneway(ei[ei['SOZ'] == 1]['correlation'], ei[ei['SOZ'] == 2]['correlation'],ei[ei['SOZ'] == 3]['correlation']))
-
-
-# %%
-
-#EI ANOVA
-from scipy.stats import kruskal, shapiro, levene, f_oneway
-
-ei = corr_df[['SOZ','correlation']]
-
-#change if you want anova, but really no different in results
-print("Spearman Correlations")
-print(kruskal(ei[ei['SOZ'] == 1]['correlation'], ei[ei['SOZ'] == 2]['correlation'],ei[ei['SOZ'] == 3]['correlation']))
-print(f_oneway(ei[ei['SOZ'] == 1]['correlation'], ei[ei['SOZ'] == 2]['correlation'],ei[ei['SOZ'] == 3]['correlation']))
