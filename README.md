@@ -10,6 +10,7 @@ To run the analysis, follow these steps:
 1) Download the codebase from:
    https://github.com/penn-cnt/IEEG_Spike-Morphology/
 2) Create an envrionment using requirements.txt or environment.yaml
+   - to install ieegpy toolbox run: 'pip install git+https://github.com/ieeg-portal/ieegpy.git'
 3) For full pipeline - Download the datasets from:
    https://upenn.box.com/s/d45set9nrrzxf2zbx4z18hsus1ivat84
 

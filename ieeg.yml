@@ -2,16 +2,21 @@ name: ieeg
 channels:
   - defaults
   - conda-forge
+  
 dependencies:
   - numpy
-  - scikit-learn
   - pandas
-  - seaborn
+  - scikit-learn
   - matplotlib
+  - seaborn
   - pip=24.0
   - scipy
   - mat73
 
   - pip:
-      - statannotations==0.6.0
+      - statannotations
+      - matplotlib
+      - pandas
+      - seaborn
+
 prefix: /scratch/aguilac/miniconda3/envs/ieeg

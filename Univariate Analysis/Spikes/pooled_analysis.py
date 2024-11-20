@@ -17,9 +17,9 @@ from spike_detector import *
 from iEEG_helper_functions import *
 from spike_morphology_v2 import *
 
-code_path = os.path.dirname('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/functions/')
-sys.path.append(code_path)
-from ied_fx_v3 import *
+# code_path = os.path.dirname('/mnt/leif/littlab/users/aguilac/Interictal_Spike_Analysis/HUMAN/working_feat_extract_code/functions/')
+# sys.path.append(code_path)
+# from ied_fx_v3 import *
 
 list_of_feats = ['spike_rate','recruitment_latency_thresh','decay_amp','sharpness','linelen','slow_amp', 'rise_amp','spike_width','slow_width']
 

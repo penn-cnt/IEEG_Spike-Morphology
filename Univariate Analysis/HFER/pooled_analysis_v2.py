@@ -1,9 +1,6 @@
 #%%
 import pandas as pd
 import numpy as np
-from ieeg.auth import Session
-from resampy import resample
-import re
 import scipy.stats as stats
 from statannotations.Annotator import Annotator
 import seaborn as sns
@@ -22,9 +19,9 @@ from spike_detector import *
 from iEEG_helper_functions import *
 from spike_morphology_v2 import *
 
-code_path = os.path.dirname('../../tools/functions/')
-sys.path.append(code_path)
-from ied_fx_v3 import *
+# code_path = os.path.dirname('../../tools/functions/')
+# sys.path.append(code_path)
+# from ied_fx_v3 import *
 
 #HFER per time
 type = '11s-hfer-'
@@ -476,7 +473,10 @@ plt.figure(figsize=(8,6))
 #change font to arial
 plt.rcParams['font.family'] = 'Arial'
 
-my_palette = {1:'#E64B35FF', 3:'#7E6148FF', 2:'#3C5488FF'}
+try:
+    my_palette = {1:'#E64B35FF', 3:'#7E6148FF', 2:'#3C5488FF'}
+except: 
+    my_palette= {'1':'#E64B35FF', '3':'#7E6148FF', '2':'#3C5488FF'}
 # my_palette = {1:'#E64B35FF', 2:'#3C5488FF'}
 pairs=[(1, 2),(1,3), (2,3)]
 order = [1,2,3]

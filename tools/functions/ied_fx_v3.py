@@ -104,7 +104,7 @@ def bandpower(data, sf, band, window_sec=None, relative=False):
         Absolute or relative band power.
     """
     from scipy.signal import welch
-    from scipy.integrate import simps
+    from scipy.integrate import simpson
     band = np.asarray(band)
     low, high = band
 
@@ -124,15 +124,15 @@ def bandpower(data, sf, band, window_sec=None, relative=False):
     idx_band = np.logical_and(freqs >= low, freqs <= high)
 
     # Integral approximation of the spectrum using Simpson's rule.
-    bp = simps(psd[idx_band], dx=freq_res)
+    bp = simpson(psd[idx_band], dx=freq_res)
 
     if relative:
-        bp /= simps(psd, dx=freq_res)
+        bp /= simpson(psd, dx=freq_res)
     return bp
 
 import numpy as np
 from scipy.signal import welch
-from scipy.integrate import simps
+from scipy.integrate import simpson
 
 def bandpower_matrix(data, sf, band, window_sec=None):
     """Compute the relative bandpower of the signal x in a specific frequency band for multiple channels.
@@ -180,8 +180,8 @@ def bandpower_matrix(data, sf, band, window_sec=None):
         idx_band = np.logical_and(freqs >= low, freqs <= high)
 
         # Integral approximation of the spectrum using Simpson's rule
-        bp = simps(psd[idx_band], dx=freq_res)
-        total_power = simps(psd, dx=freq_res)
+        bp = simpson(psd[idx_band], dx=freq_res)
+        total_power = simpson(psd, dx=freq_res)
 
         # Calculate relative bandpower
         rel_bp[ch] = bp / total_power
