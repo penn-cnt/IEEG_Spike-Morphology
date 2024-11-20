@@ -9,10 +9,12 @@ and initializing machine learning models to predict mTLE is included.
 To run the analysis, follow these steps:
 1) Download the codebase from:
    https://github.com/penn-cnt/IEEG_Spike-Morphology/
-2) Create an envrionment using requirements.txt or environment.yaml
+2) Create an envrionment using ieeg.yml
    - to install ieegpy toolbox run: 'pip install git+https://github.com/ieeg-portal/ieegpy.git'
+   - Alternatvely, you can manually pip install or conda install any of the packages in the ieeg.yml file
 3) For full pipeline - Download the datasets from:
    https://upenn.box.com/s/d45set9nrrzxf2zbx4z18hsus1ivat84
+4) Create any missing folders. They were probably empty and did not get added.
 
 Explaining codebase:
 - Univariate Analysis folder contains the pooled (2 cohorts) analysis. Code here replicates figures. (complete run in <1 min).
